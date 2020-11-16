@@ -283,12 +283,12 @@ class AttSeq2Seq(Chain):
 def ReadTestData():
     input_data = []
     output_data = []
-    with open("C:\\Users\\kiryu\\Documents\\GitHub\\python-seq2seq-model\\mine\\data\\input\\input.txt",mode='r',encoding="utf-8") as f:
+    with open(".\\mine\\data\\input\\input.txt",mode='r',encoding="utf-8") as f:
         input_data = f.readlines()
-    with open("C:\\Users\\kiryu\\Documents\\GitHub\\python-seq2seq-model\\mine\\data\\output\\output.txt",mode='r',encoding="utf-8") as f:
+    with open(".\\mine\\data\\output\\output.txt",mode='r',encoding="utf-8") as f:
         output_data = f.readlines()
     result = []
-    for i in range(100):
+    for i in range(1000):
         # result.append([input_data[i].rsplit("\n"),output_data[i].rsplit("\n")])
         result.append([[input_data[i].replace( '\n' , '' )],[output_data[i].replace( '\n' , '' )]])
     return result
@@ -372,7 +372,7 @@ if __name__ == "__main__":
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    # network = "C:\\Users\\kiryu\\Documents\\GitHub\\python-seq2seq-model\\mine\\data\\network\\testdata6.network"
+    # network = ".\\mine\\data\\network\\testdata8.network"
     # serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
@@ -381,5 +381,5 @@ if __name__ == "__main__":
         model.to_gpu(0)
     model.reset()
     # pprint.pprint(data)
-    StudyStart("C:\\Users\\kiryu\\Documents\\GitHub\\python-seq2seq-model\\mine\\data\\network\\testdata7.network")
+    StudyStart(".\\mine\\data\\network\\testdata8.network")
     # SpeechStart()
