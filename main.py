@@ -364,12 +364,6 @@ def funcname(parameter_list):
     """
     pass
 
-
-
-
-
-
-
 def predict(model, query):
     enc_query = data_converter.sentence2ids(query, train=False)
     dec_response = model(enc_words=enc_query, train=False)

@@ -1,2 +1,3 @@
-./vscode
-./mine
+/vscode
+/.vscode*
+/mine
