@@ -292,6 +292,22 @@ def ReadTestData():
         # result.append([input_data[i].rsplit("\n"),output_data[i].rsplit("\n")])
         result.append([[input_data[i].replace( '\n' , '' )],[output_data[i].replace( '\n' , '' )]])
     return result
+
+def ReadTestQuestionnaireData():
+    input_data = []
+    output_data = []
+    with open(".\\mine\\Question\\input 入力\\inputText.txt",mode='r',encoding="utf-8") as f:
+        input_data = f.readlines()
+    with open(".\\mine\\Question\\output 出力\\output2.txt",mode='r',encoding="utf-8") as f:
+        output_data = f.readlines()
+    result = []
+    for i in range(len(input_data)):
+        # result.append([input_data[i].rsplit("\n"),output_data[i].rsplit("\n")])
+        temp_index = output_data[i].index(".")+1
+        temp_str = output_data[i][temp_index:]
+        result.append([[input_data[i].replace( '\n' , '' )],[temp_str.replace( '\n' , '' )]])
+    return result
+
 # 学習開始
 def StudyStart(output_path):
     print("Train")
@@ -316,31 +332,54 @@ def StudyStart(output_path):
             st = datetime.datetime.now()
 
 def SpeechStart():
-    print("\nPredict")
-    predict(model, "27日")
-    predict(model, "どこか来たの？")
-    predict(model, "こんにちは")
-    predict(model, "仕事は何してますか？")
-    predict(model, "お会いできて嬉しかったです。")
-    predict(model, "おはよ。")
-    predict(model, "こんにちは")
-    predict(model, "いつも何時に起きますか？")
-    predict(model, "朝食は何を食べますか？")
-    predict(model, "朝食は毎日食べますか？")
-    predict(model, "野菜をたくさん取っていますか？")
-    predict(model, "週末は何をしていますか？")
-    predict(model, "どこに行くのが好き？")
+    # while True:
+    #     print("Predict input start")
+    #     text = input()
+    #     result = predict(model, text)
+    #     print("".join(result[:-1]))
+    print(predict(model, "名前は何ですか") == predict(model, "名前は何ですか"[:3]))
+    print(predict(model, "名前は何ですか"[:3]))
+    print(predict(model, "好きな食べ物は何ですか") == predict(model, "好きな食べ物は何ですか"[:3]))
+    print(predict(model, "好きな食べ物は何ですか"[:3]))
+    print(predict(model, "どこに住んでいますか") == predict(model, "どこに住んでいますか"[:3]))
+    print(predict(model, "どこに住んでいますか"[:3]))
+    print(predict(model, "趣味は何ですか") == predict(model, "趣味は何ですか"[:3]))
+    print(predict(model, "趣味は何ですか"[:3]))
+    print(predict(model, "将来の夢は何ですか") == predict(model, "将来の夢は何ですか"[:3]))
+    print(predict(model, "将来の夢は何ですか"[:3]))
+    print(predict(model, "好きなドリンクは何ですか") == predict(model, "好きなドリンクは何ですか"[:3]))
+    print(predict(model, "好きなドリンクは何ですか"[:3]))
+    print(predict(model, "憧れている人は誰ですか") == predict(model, "憧れている人は誰ですか"[:3]))
+    print(predict(model, "憧れている人は誰ですか"[:3]))
+    print(predict(model, "最近どこに行きましたか") == predict(model, "最近どこに行きましたか"[:3]))
+    print(predict(model, "最近どこに行きましたか"[:3]))
+    print(predict(model, "現在働いているところはどこですか") == predict(model, "現在働いているところはどこですか"[:3]))
+    print(predict(model, "現在働いているところはどこですか"[:3]))
+    print(predict(model, "理想の恋人のタイプは何") == predict(model, "理想の恋人のタイプは何"[:3]))
+    print(predict(model, "理想の恋人のタイプは何"[:3]))
+
+def funcname(parameter_list):
+    """
+    docstring
+    """
+    pass
+
+
+
+
+
 
 
 def predict(model, query):
     enc_query = data_converter.sentence2ids(query, train=False)
     dec_response = model(enc_words=enc_query, train=False)
     response = data_converter.ids2words(dec_response)
-    print(query, "=>", "".join(response[:-1]))
-
+    # print(query, "=>", "".join(response[:-1]))
+    return response
 
 if __name__ == "__main__":
-    data = ReadTestData()
+    # data = ReadTestData()
+    data = ReadTestQuestionnaireData()
     # data = [
     #     [["初めまして。"], ["初めまして。よろしくお願いします。"]],
     #     [["どこから来たんですか？"], ["日本から来ました。"]],
@@ -361,19 +400,19 @@ if __name__ == "__main__":
     HIDDEN_SIZE = 100
     BATCH_SIZE = 6 # ミニバッチ学習のバッチサイズ数
     BATCH_COL_SIZE = 15
-    EPOCH_NUM = 100 # エポック数
+    EPOCH_NUM = 50 # エポック数
     N = len(data) # 教師データの数
 
     # 教師データの読み込み
     data_converter = DataConverter(batch_col_size=BATCH_COL_SIZE) # データコンバーター
     data_converter.load(data) # 教師データ読み込み
     vocab_size = len(data_converter.vocab) # 単語数
-
+# 4　6
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    # network = ".\\mine\\data\\network\\testdata8.network"
-    # serializers.load_npz(network, model)
+    network = ".\\mine\\data\\network\\questionnaire\\second_test_q2.network"
+    serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
     opt.add_hook(optimizer.GradientClipping(5))
@@ -381,5 +420,5 @@ if __name__ == "__main__":
         model.to_gpu(0)
     model.reset()
     # pprint.pprint(data)
-    StudyStart(".\\mine\\data\\network\\testdata8.network")
-    # SpeechStart()
+    # StudyStart(".\\mine\\data\\network\\questionnaire\\second_test_q2.network")
+    SpeechStart()
