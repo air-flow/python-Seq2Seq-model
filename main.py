@@ -39,8 +39,11 @@ class DataConverter:
         queries, responses = [], []
         for d in data:
             query, response = d[0][0], d[1][0] #  エンコード文、デコード文
+            print(query)
+            print(self.sentence2ids(sentence=query, train=True, sentence_type="query"))
             queries.append(self.sentence2ids(sentence=query, train=True, sentence_type="query"))
             responses.append(self.sentence2ids(sentence=response, train=True, sentence_type="response"))
+        # pprint.pprint(queries)
         self.train_queries = xp.vstack(queries)
         self.train_responses = xp.vstack(responses)
 
@@ -337,32 +340,7 @@ def SpeechStart():
     #     text = input()
     #     result = predict(model, text)
     #     print("".join(result[:-1]))
-    print(predict(model, "名前は何ですか") == predict(model, "名前は何ですか"[:3]))
-    print(predict(model, "名前は何ですか"[:3]))
-    print(predict(model, "好きな食べ物は何ですか") == predict(model, "好きな食べ物は何ですか"[:3]))
-    print(predict(model, "好きな食べ物は何ですか"[:3]))
-    print(predict(model, "どこに住んでいますか") == predict(model, "どこに住んでいますか"[:3]))
-    print(predict(model, "どこに住んでいますか"[:3]))
-    print(predict(model, "趣味は何ですか") == predict(model, "趣味は何ですか"[:3]))
-    print(predict(model, "趣味は何ですか"[:3]))
-    print(predict(model, "将来の夢は何ですか") == predict(model, "将来の夢は何ですか"[:3]))
-    print(predict(model, "将来の夢は何ですか"[:3]))
-    print(predict(model, "好きなドリンクは何ですか") == predict(model, "好きなドリンクは何ですか"[:3]))
-    print(predict(model, "好きなドリンクは何ですか"[:3]))
-    print(predict(model, "憧れている人は誰ですか") == predict(model, "憧れている人は誰ですか"[:3]))
-    print(predict(model, "憧れている人は誰ですか"[:3]))
-    print(predict(model, "最近どこに行きましたか") == predict(model, "最近どこに行きましたか"[:3]))
-    print(predict(model, "最近どこに行きましたか"[:3]))
-    print(predict(model, "現在働いているところはどこですか") == predict(model, "現在働いているところはどこですか"[:3]))
-    print(predict(model, "現在働いているところはどこですか"[:3]))
-    print(predict(model, "理想の恋人のタイプは何") == predict(model, "理想の恋人のタイプは何"[:3]))
-    print(predict(model, "理想の恋人のタイプは何"[:3]))
-
-def funcname(parameter_list):
-    """
-    docstring
-    """
-    pass
+    print(predict(model, "名前は何ですか"))
 
 def predict(model, query):
     enc_query = data_converter.sentence2ids(query, train=False)
@@ -373,21 +351,21 @@ def predict(model, query):
 
 if __name__ == "__main__":
     # data = ReadTestData()
-    data = ReadTestQuestionnaireData()
-    # data = [
-    #     [["初めまして。"], ["初めまして。よろしくお願いします。"]],
-    #     [["どこから来たんですか？"], ["日本から来ました。"]],
-    #     [["日本のどこに住んでるんですか？"], ["東京に住んでいます。"]],
-    #     [["仕事は何してますか？"], ["私は会社員です。"]],
-    #     [["お会いできて嬉しかったです。"], ["私もです！"]],
-    #     [["おはよう。"], ["おはようございます。"]],
-    #     [["いつも何時に起きますか？"], ["6時に起きます。"]],
-    #     [["朝食は何を食べますか？"], ["たいていトーストと卵を食べます。"]],
-    #     [["朝食は毎日食べますか？"], ["たまに朝食を抜くことがあります。"]],
-    #     [["野菜をたくさん取っていますか？"], ["毎日野菜を取るようにしています。"]],
-    #     [["週末は何をしていますか？"], ["友達と会っていることが多いです。"]],
-    #     [["どこに行くのが好き？"], ["私たちは渋谷に行くのが好きです。"]]
-    # ]
+    # data = ReadTestQuestionnaireData()
+    data = [
+        [["初めまして。"], ["初めまして。よろしくお願いします。"]],
+        [["どこから来たんですか？"], ["日本から来ました。"]],
+        [["日本のどこに住んでるんですか？"], ["東京に住んでいます。"]],
+        [["仕事は何してますか？"], ["私は会社員です。"]],
+        [["お会いできて嬉しかったです。"], ["私もです！"]],
+        [["おはよう。"], ["おはようございます。"]],
+        [["いつも何時に起きますか？"], ["6時に起きます。"]],
+        [["朝食は何を食べますか？"], ["たいていトーストと卵を食べます。"]],
+        [["朝食は毎日食べますか？"], ["たまに朝食を抜くことがあります。"]],
+        [["野菜をたくさん取っていますか？"], ["毎日野菜を取るようにしています。"]],
+        [["週末は何をしていますか？"], ["友達と会っていることが多いです。"]],
+        [["どこに行くのが好き？"], ["私たちは渋谷に行くのが好きです。"]]
+    ]
     # pprint.pprint(data)
     # pprint.pprint(ReadTestData())
     EMBED_SIZE = 100
@@ -401,11 +379,13 @@ if __name__ == "__main__":
     data_converter = DataConverter(batch_col_size=BATCH_COL_SIZE) # データコンバーター
     data_converter.load(data) # 教師データ読み込み
     vocab_size = len(data_converter.vocab) # 単語数
+    # pprint.pprint(sorted(data_converter.vocab.items(), key=lambda x:x[1]))
+    # print(vocab_size)
 # 4　6
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\questionnaire\\second_test_q2.network"
+    network = ".\\mine\\data\\network\\default_test_data.network"
     serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
