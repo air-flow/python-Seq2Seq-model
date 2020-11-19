@@ -393,8 +393,6 @@ if __name__ == "__main__":
         [["週末は何をしていますか？"], ["友達と会っていることが多いです。"]],
         [["どこに行くのが好き？"], ["私たちは渋谷に行くのが好きです。"]]
     ]
-    # pprint.pprint(data)
-    # pprint.pprint(ReadTestData())
     EMBED_SIZE = 100
     HIDDEN_SIZE = 100
     BATCH_SIZE = 6 # ミニバッチ学習のバッチサイズ数
