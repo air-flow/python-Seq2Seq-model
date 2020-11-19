@@ -5,6 +5,7 @@ import chainer.functions as F
 import chainer.links as L
 import MeCab
 import pprint
+from operator import itemgetter
 # pip install numpy scipy scikit-learn chainer
 # GPUのセット
 FLAG_GPU = False # GPUを使用するかどうか
@@ -39,12 +40,10 @@ class DataConverter:
         queries, responses = [], []
         for d in data:
             query, response = d[0][0], d[1][0] #  エンコード文、デコード文
-            print(query)
-            print(self.sentence2ids(sentence=query, train=True, sentence_type="query"))
             queries.append(self.sentence2ids(sentence=query, train=True, sentence_type="query"))
             responses.append(self.sentence2ids(sentence=response, train=True, sentence_type="response"))
-        # pprint.pprint(queries)
         self.train_queries = xp.vstack(queries)
+        # pprint.pprint(self.train_queries[[2,6,5]])
         self.train_responses = xp.vstack(responses)
 
     def sentence2words(self, sentence):
@@ -335,19 +334,47 @@ def StudyStart(output_path):
             st = datetime.datetime.now()
 
 def SpeechStart():
-    # while True:
-    #     print("Predict input start")
-    #     text = input()
-    #     result = predict(model, text)
-    #     print("".join(result[:-1]))
-    print(predict(model, "名前は何ですか"))
+    for i in data:
+        text = i[0][0]
+        lack_text = TextRandomLack(text) #単語ランダム取得
+        print("True A : "+i[1][0],"AI A : "+predict(model, lack_text))
+
+# 文章をわかち書きした単語をランダムで選択し再構築する
+# もとの学習文章からどれだけ単語が欠如しても対応できるのかのテスト用
+def TextRandomLack(text):
+    m = MeCab.Tagger()
+    result = []
+    for m in m.parse(text).split("\n"):
+        temp = m.split("\t")[0].lower()
+        if len(temp) != 0 and temp != "eos":
+            result.append(temp)
+    # print(text,result)
+    if len(result) > 2:# 結果行が最低限の単語数に満たない場合を弾く
+        data_size = len(result)
+        sample_size = 2
+        if data_size - 2 > 0:# 抽出する単語数を指定するときのマイナス判定
+            sample_size = data_size - 2
+        shuffled_idx = np.random.choice(np.arange(data_size), sample_size, replace=False)
+        shuffled_idx.sort()#ランダムリストは順序が保証されていないため昇順に変換
+        result = "".join(list(itemgetter(*shuffled_idx)(result)))
+    else:
+        result = "".join(result)
+    return result
+
+def ConsoleInputText():
+    while True:
+        print("Predict input start")
+        text = input()
+        result = predict(model, text)
+        print("".join(result[:-1]))
+
 
 def predict(model, query):
     enc_query = data_converter.sentence2ids(query, train=False)
     dec_response = model(enc_words=enc_query, train=False)
     response = data_converter.ids2words(dec_response)
     # print(query, "=>", "".join(response[:-1]))
-    return response
+    return "".join(response[:-1])
 
 if __name__ == "__main__":
     # data = ReadTestData()
@@ -379,9 +406,7 @@ if __name__ == "__main__":
     data_converter = DataConverter(batch_col_size=BATCH_COL_SIZE) # データコンバーター
     data_converter.load(data) # 教師データ読み込み
     vocab_size = len(data_converter.vocab) # 単語数
-    # pprint.pprint(sorted(data_converter.vocab.items(), key=lambda x:x[1]))
-    # print(vocab_size)
-# 4　6
+
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
@@ -394,5 +419,5 @@ if __name__ == "__main__":
         model.to_gpu(0)
     model.reset()
     # pprint.pprint(data)
-    # StudyStart(".\\mine\\data\\network\\questionnaire\\second_test_q2.network")
+    # StudyStart(".\\mine\\data\\network\\default_Ytest_data.network")
     SpeechStart()
