@@ -2,6 +2,7 @@ import numpy as np
 import MeCab
 from operator import itemgetter
 import pprint
+import random
 # 教師データ
 def ReadTestData():
     input_data = []
@@ -61,9 +62,9 @@ def TextRandomLack(text):
     # print(text,result)
     if len(result) > 2:# 結果行が最低限の単語数に満たない場合を弾く
         data_size = len(result)
-        sample_size = 2
-        if data_size - 2 > 0:# 抽出する単語数を指定するときのマイナス判定
-            sample_size = data_size - 2
+        sample_size = 3
+        if data_size - 3 > 0:# 抽出する単語数を指定するときのマイナス判定
+            sample_size = random.randint(3, data_size-1)
         shuffled_idx = np.random.choice(np.arange(data_size), sample_size, replace=False)
         shuffled_idx.sort()#ランダムリストは順序が保証されていないため昇順に変換
         result = "".join(list(itemgetter(*shuffled_idx)(result)))
@@ -72,9 +73,35 @@ def TextRandomLack(text):
     return result
 
 
+def TestRandom():
+    result = list(range(0,1,1))
+    data_size = len(result)
+    # range(random.randint(3, data_size)
+    temp = []
+    r = {}
+    for i in result:
+        if i > 2:
+            r[i] = 0
+    # print(r)
+    for i in range(100):
+        sample_size = random.randint(3, data_size-1)
+        shuffled_idx = np.random.choice(np.arange(data_size), sample_size, replace=False)
+        shuffled_idx.sort()
+        # print(shuffled_idx)
+        temp.append([len(shuffled_idx),shuffled_idx])
+        r[len(shuffled_idx)]+=1
+        
+def funcname(parameter_list):
+    """
+    docstring
+    """
+    pass
 if __name__ == "__main__":
-    pprint.pprint(SampleData())
+    # pprint.pprint(SampleData())
     # pprint.pprint(ReadTestData())
     # print(len(ReadTestData()))
     # pprint.pprint(ReadTestQuestionnaireData(1))
     # print(len(ReadTestQuestionnaireData(1)))
+    # pprint.pprint(temp)
+    for i in SampleData():
+        pprint.pprint(TextRandomLack(i[0][0]))

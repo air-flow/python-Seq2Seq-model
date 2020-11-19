@@ -377,22 +377,22 @@ def predict(model, query):
     return "".join(response[:-1])
 
 if __name__ == "__main__":
-    # data = ReadTestData()
+    data = ReadTestData()
     # data = ReadTestQuestionnaireData()
-    data = [
-        [["初めまして。"], ["初めまして。よろしくお願いします。"]],
-        [["どこから来たんですか？"], ["日本から来ました。"]],
-        [["日本のどこに住んでるんですか？"], ["東京に住んでいます。"]],
-        [["仕事は何してますか？"], ["私は会社員です。"]],
-        [["お会いできて嬉しかったです。"], ["私もです！"]],
-        [["おはよう。"], ["おはようございます。"]],
-        [["いつも何時に起きますか？"], ["6時に起きます。"]],
-        [["朝食は何を食べますか？"], ["たいていトーストと卵を食べます。"]],
-        [["朝食は毎日食べますか？"], ["たまに朝食を抜くことがあります。"]],
-        [["野菜をたくさん取っていますか？"], ["毎日野菜を取るようにしています。"]],
-        [["週末は何をしていますか？"], ["友達と会っていることが多いです。"]],
-        [["どこに行くのが好き？"], ["私たちは渋谷に行くのが好きです。"]]
-    ]
+    # data = [
+    #     [["初めまして。"], ["初めまして。よろしくお願いします。"]],
+    #     [["どこから来たんですか？"], ["日本から来ました。"]],
+    #     [["日本のどこに住んでるんですか？"], ["東京に住んでいます。"]],
+    #     [["仕事は何してますか？"], ["私は会社員です。"]],
+    #     [["お会いできて嬉しかったです。"], ["私もです！"]],
+    #     [["おはよう。"], ["おはようございます。"]],
+    #     [["いつも何時に起きますか？"], ["6時に起きます。"]],
+    #     [["朝食は何を食べますか？"], ["たいていトーストと卵を食べます。"]],
+    #     [["朝食は毎日食べますか？"], ["たまに朝食を抜くことがあります。"]],
+    #     [["野菜をたくさん取っていますか？"], ["毎日野菜を取るようにしています。"]],
+    #     [["週末は何をしていますか？"], ["友達と会っていることが多いです。"]],
+    #     [["どこに行くのが好き？"], ["私たちは渋谷に行くのが好きです。"]]
+    # ]
     EMBED_SIZE = 100
     HIDDEN_SIZE = 100
     BATCH_SIZE = 6 # ミニバッチ学習のバッチサイズ数
@@ -404,11 +404,11 @@ if __name__ == "__main__":
     data_converter = DataConverter(batch_col_size=BATCH_COL_SIZE) # データコンバーター
     data_converter.load(data) # 教師データ読み込み
     vocab_size = len(data_converter.vocab) # 単語数
-
+    # pprint.pprint(sorted(data_converter.vocab.items(), key=lambda x:x[1]))
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\default_test_data.network"
+    network = ".\\mine\\data\\network\\testdata8.network"
     serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
@@ -418,4 +418,4 @@ if __name__ == "__main__":
     model.reset()
     # pprint.pprint(data)
     # StudyStart(".\\mine\\data\\network\\default_Ytest_data.network")
-    SpeechStart()
+    # SpeechStart()
