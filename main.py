@@ -6,6 +6,7 @@ import chainer.links as L
 import MeCab
 import pprint
 from operator import itemgetter
+from customize_data import SampleData, ReadTestQuestionnaireData,TextRandomLack
 # pip install numpy scipy scikit-learn chainer
 # GPUのセット
 FLAG_GPU = False # GPUを使用するかどうか
@@ -279,37 +280,6 @@ class AttSeq2Seq(Chain):
                     break
             return ys
 
-# 学習
-
-# 教師データ
-def ReadTestData():
-    input_data = []
-    output_data = []
-    with open(".\\mine\\data\\input\\input.txt",mode='r',encoding="utf-8") as f:
-        input_data = f.readlines()
-    with open(".\\mine\\data\\output\\output.txt",mode='r',encoding="utf-8") as f:
-        output_data = f.readlines()
-    result = []
-    for i in range(1000):
-        # result.append([input_data[i].rsplit("\n"),output_data[i].rsplit("\n")])
-        result.append([[input_data[i].replace( '\n' , '' )],[output_data[i].replace( '\n' , '' )]])
-    return result
-
-def ReadTestQuestionnaireData():
-    input_data = []
-    output_data = []
-    with open(".\\mine\\Question\\input 入力\\inputText.txt",mode='r',encoding="utf-8") as f:
-        input_data = f.readlines()
-    with open(".\\mine\\Question\\output 出力\\output2.txt",mode='r',encoding="utf-8") as f:
-        output_data = f.readlines()
-    result = []
-    for i in range(len(input_data)):
-        # result.append([input_data[i].rsplit("\n"),output_data[i].rsplit("\n")])
-        temp_index = output_data[i].index(".")+1
-        temp_str = output_data[i][temp_index:]
-        result.append([[input_data[i].replace( '\n' , '' )],[temp_str.replace( '\n' , '' )]])
-    return result
-
 # 学習開始
 def StudyStart(output_path):
     print("Train")
@@ -339,28 +309,6 @@ def SpeechStart():
         lack_text = TextRandomLack(text) #単語ランダム取得
         print("True A : "+i[1][0],"AI A : "+predict(model, lack_text))
 
-# 文章をわかち書きした単語をランダムで選択し再構築する
-# もとの学習文章からどれだけ単語が欠如しても対応できるのかのテスト用
-def TextRandomLack(text):
-    m = MeCab.Tagger()
-    result = []
-    for m in m.parse(text).split("\n"):
-        temp = m.split("\t")[0].lower()
-        if len(temp) != 0 and temp != "eos":
-            result.append(temp)
-    # print(text,result)
-    if len(result) > 2:# 結果行が最低限の単語数に満たない場合を弾く
-        data_size = len(result)
-        sample_size = 2
-        if data_size - 2 > 0:# 抽出する単語数を指定するときのマイナス判定
-            sample_size = data_size - 2
-        shuffled_idx = np.random.choice(np.arange(data_size), sample_size, replace=False)
-        shuffled_idx.sort()#ランダムリストは順序が保証されていないため昇順に変換
-        result = "".join(list(itemgetter(*shuffled_idx)(result)))
-    else:
-        result = "".join(result)
-    return result
-
 def ConsoleInputText():
     while True:
         print("Predict input start")
@@ -377,22 +325,7 @@ def predict(model, query):
     return "".join(response[:-1])
 
 if __name__ == "__main__":
-    data = ReadTestData()
-    # data = ReadTestQuestionnaireData()
-    # data = [
-    #     [["初めまして。"], ["初めまして。よろしくお願いします。"]],
-    #     [["どこから来たんですか？"], ["日本から来ました。"]],
-    #     [["日本のどこに住んでるんですか？"], ["東京に住んでいます。"]],
-    #     [["仕事は何してますか？"], ["私は会社員です。"]],
-    #     [["お会いできて嬉しかったです。"], ["私もです！"]],
-    #     [["おはよう。"], ["おはようございます。"]],
-    #     [["いつも何時に起きますか？"], ["6時に起きます。"]],
-    #     [["朝食は何を食べますか？"], ["たいていトーストと卵を食べます。"]],
-    #     [["朝食は毎日食べますか？"], ["たまに朝食を抜くことがあります。"]],
-    #     [["野菜をたくさん取っていますか？"], ["毎日野菜を取るようにしています。"]],
-    #     [["週末は何をしていますか？"], ["友達と会っていることが多いです。"]],
-    #     [["どこに行くのが好き？"], ["私たちは渋谷に行くのが好きです。"]]
-    # ]
+    data = SampleData()
     EMBED_SIZE = 100
     HIDDEN_SIZE = 100
     BATCH_SIZE = 6 # ミニバッチ学習のバッチサイズ数
@@ -408,7 +341,7 @@ if __name__ == "__main__":
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\testdata8.network"
+    network = ".\\mine\\data\\network\\default_test_data.network"
     serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
@@ -418,4 +351,4 @@ if __name__ == "__main__":
     model.reset()
     # pprint.pprint(data)
     # StudyStart(".\\mine\\data\\network\\default_Ytest_data.network")
-    # SpeechStart()
+    SpeechStart()
