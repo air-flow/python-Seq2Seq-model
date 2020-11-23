@@ -34,6 +34,18 @@ def ReadTestQuestionnaireData(number=2):
         result.append([[input_data[i].replace( '\n' , '' )],[temp_str.replace( '\n' , '' )]])
     return result
 
+def SetInputOutput(input_data,output_data):
+    result = []
+    for i in range(len(input_data)-1):
+        result.append([[input_data[i].replace( '\n' , '' )],[output_data[i].replace( '\n' , '' )]])
+    return result
+
+def GetFile (path):
+    with open(path,mode='r',encoding="utf-8") as f:
+        input_data = f.readlines()
+    return input_data
+
+
 def SampleData():
     data = [
         [["初めまして。"], ["初めまして。よろしくお願いします。"]],
@@ -94,7 +106,7 @@ def TestRandom():
 
 
 if __name__ == "__main__":
-    pprint.pprint(SampleData())
+    # pprint.pprint(SampleData())
     # pprint.pprint(ReadTestData())
     # print(len(ReadTestData()))
     # pprint.pprint(ReadTestQuestionnaireData(1))
@@ -102,3 +114,4 @@ if __name__ == "__main__":
     # pprint.pprint(temp)
     # for i in SampleData():
         # pprint.pprint(TextRandomLack(i[0][0]))
+    pass
