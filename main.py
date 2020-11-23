@@ -7,6 +7,7 @@ import MeCab
 import pprint
 from operator import itemgetter
 from customize_data import SampleData, ReadTestQuestionnaireData,TextRandomLack,GetFile,SetInputOutput
+from analysis import CosSimilarity
 # pip install numpy scipy scikit-learn chainer
 # GPUのセット
 FLAG_GPU = False # GPUを使用するかどうか
@@ -304,17 +305,18 @@ def StudyStart(output_path):
             st = datetime.datetime.now()
 
 def SpeechStart():
-    temp = ["時計","いちご","写真"]
-    # for i in range(0,10):
-    #     text = data[i][0][0]
-    #     # lack_text = TextRandomLack(text) #単語ランダム取得
-    #     result = predict(model, text)
-    #     print(text, result)
-    for i in temp:
-            # text = 
-            # lack_text = TextRandomLack(text) #単語ランダム取得
-            result = predict(model, text)
-            print(text, result)
+    # temp = ["時計","いちご","写真"]
+    for i in range(0,10):
+        text = data[i][0][0]
+        # lack_text = TextRandomLack(text) #単語ランダム取得
+        result = predict(model, text)
+        print(text, result)
+    # for i in temp:
+    #         # text = 
+    #         # lack_text = TextRandomLack(text) #単語ランダム取得
+    #         result = predict(model, i)
+    #         print(i, result)
+
 def SpeechOneText(text):
     return predict(model, text)
 
@@ -325,6 +327,10 @@ def ConsoleInputText():
         result = predict(model, text)
         print("".join(result[:-1]))
 
+def SpeechAnalysis():
+    result = CosSimilarity(data)
+    for i in result:
+        print(i[1],SpeechOneText(i[0][0])==SpeechOneText(i[0][1]))
 
 def predict(model, query):
     enc_query = data_converter.sentence2ids(query, train=False)
@@ -333,15 +339,16 @@ def predict(model, query):
     # print(query, "=>", "".join(response[:-1]))
     return "".join(response[:-1])
 
+
 if __name__ == "__main__":
     # data = SampleData()
-    input_data = GetFile(".\\mine\\siritori\\input\\input2.txt")
-    output_data = GetFile(".\\mine\\siritori\\output\\output2.txt")
+    input_data = GetFile(".\\mine\\base_sample\\input\\input.txt")
+    output_data = GetFile(".\\mine\\base_sample\\output\\output.txt")
     data = SetInputOutput(input_data,output_data)
     EMBED_SIZE = 100
     HIDDEN_SIZE = 100
     BATCH_SIZE = 6 # ミニバッチ学習のバッチサイズ数
-    BATCH_COL_SIZE = 5
+    BATCH_COL_SIZE = 15
     EPOCH_NUM = 50 # エポック数
     N = len(data) # 教師データの数
 
@@ -353,7 +360,7 @@ if __name__ == "__main__":
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\siritori\\s2.network"
+    network = ".\\mine\\data\\network\\base\\sample1.network"
     serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
@@ -361,7 +368,7 @@ if __name__ == "__main__":
     if FLAG_GPU:
         model.to_gpu(0)
     model.reset()
-    # pprint.pprint(data)
-    StudyStart(".\\mine\\data\\network\\siritori\\s2.network")
+    # StudyStart(".\\mine\\data\\network\\base\\sample1.network")
     # SpeechStart()
     # ConsoleInputText()
+    SpeechAnalysis()

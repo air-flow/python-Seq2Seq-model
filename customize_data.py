@@ -40,7 +40,7 @@ def SetInputOutput(input_data,output_data):
         result.append([[input_data[i].replace( '\n' , '' )],[output_data[i].replace( '\n' , '' )]])
     return result
 
-def GetFile (path):
+def GetFile(path):
     with open(path,mode='r',encoding="utf-8") as f:
         input_data = f.readlines()
     return input_data
