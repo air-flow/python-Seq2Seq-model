@@ -6,8 +6,10 @@ import chainer.links as L
 import MeCab
 import pprint
 from operator import itemgetter
+
+from numpy.lib.scimath import sqrt
 from customize_data import SampleData, ReadTestQuestionnaireData,TextRandomLack,GetFile,SetInputOutput
-from analysis import CosSimilarity
+from analysis import CosSimilarity,PercentageOfCorrectAnswers
 # pip install numpy scipy scikit-learn chainer
 # GPUのセット
 FLAG_GPU = False # GPUを使用するかどうか
@@ -223,14 +225,14 @@ class AttSeq2Seq(Chain):
             self.fs.append(h) # 計算された中間ベクトルを記録
         # 内部メモリ、中間ベクトルの初期化
         c = Variable(xp.zeros((batch_size, self.hidden_size), dtype='float32'))
-        h = Variable(xp.zeros((batch_size, self.hidden_size), dtype='float32'))        
+        h = Variable(xp.zeros((batch_size, self.hidden_size), dtype='float32'))
         # 逆向きのEncoderの計算
         for w in reversed(words):
             c, h = self.b_encoder(w, c, h)
             self.bs.insert(0, h) # 計算された中間ベクトルを記録
         # 内部メモリ、中間ベクトルの初期化
         self.c = Variable(xp.zeros((batch_size, self.hidden_size), dtype='float32'))
-        self.h = Variable(xp.zeros((batch_size, self.hidden_size), dtype='float32'))        
+        self.h = Variable(xp.zeros((batch_size, self.hidden_size), dtype='float32'))
 
     def decode(self, w):
         # Decoderの計算
@@ -330,7 +332,17 @@ def ConsoleInputText():
 def SpeechAnalysis():
     result = CosSimilarity(data)
     for i in result:
-        print(i[1],SpeechOneText(i[0][0])==SpeechOneText(i[0][1]))
+        print(i[1])
+        print(SpeechOneText(i[0][0]))
+        print(SpeechOneText(i[0][1]))
+
+def SpeechAnswer(data):
+    answer = []
+    seq2seq_answer = []
+    for i in data:
+        answer.append(i[1][0])
+        seq2seq_answer.append(SpeechOneText(i[0][0]))
+    PercentageOfCorrectAnswers(answer,seq2seq_answer)
 
 def predict(model, query):
     enc_query = data_converter.sentence2ids(query, train=False)
@@ -368,7 +380,8 @@ if __name__ == "__main__":
     if FLAG_GPU:
         model.to_gpu(0)
     model.reset()
-    # StudyStart(".\\mine\\data\\network\\base\\sample1.network")
+    # StudyStart(".\\mine\\data\\network\\base\\sample2.network")
     # SpeechStart()
     # ConsoleInputText()
-    SpeechAnalysis()
+    # SpeechAnalysis()
+    SpeechAnswer(data)
