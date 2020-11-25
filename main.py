@@ -307,17 +307,11 @@ def StudyStart(output_path):
             st = datetime.datetime.now()
 
 def SpeechStart():
-    # temp = ["時計","いちご","写真"]
     for i in range(0,10):
         text = data[i][0][0]
         # lack_text = TextRandomLack(text) #単語ランダム取得
         result = predict(model, text)
         print(text, result)
-    # for i in temp:
-    #         # text = 
-    #         # lack_text = TextRandomLack(text) #単語ランダム取得
-    #         result = predict(model, i)
-    #         print(i, result)
 
 def SpeechOneText(text):
     return predict(model, text)
@@ -341,8 +335,10 @@ def SpeechAnswer(data):
     seq2seq_answer = []
     for i in data:
         answer.append(i[1][0])
-        seq2seq_answer.append(SpeechOneText(i[0][0]))
+        # seq2seq_answer.append(TextRandomLack(SpeechOneText(i[0][0])))#欠如文章
+        seq2seq_answer.append(SpeechOneText(i[0][0]))#学習エンコード文章
     PercentageOfCorrectAnswers(answer,seq2seq_answer)
+    PrintTime()
 
 def predict(model, query):
     enc_query = data_converter.sentence2ids(query, train=False)
@@ -351,11 +347,15 @@ def predict(model, query):
     # print(query, "=>", "".join(response[:-1]))
     return "".join(response[:-1])
 
+def PrintTime(text="END"):
+    now_time = datetime.datetime.now()
+    print("Timing : ",text," time :",now_time-main_time)
 
 if __name__ == "__main__":
+    main_time = datetime.datetime.now()
     # data = SampleData()
-    input_data = GetFile(".\\mine\\base_sample\\input\\input.txt")
-    output_data = GetFile(".\\mine\\base_sample\\output\\output.txt")
+    input_data = GetFile(".\\mine\\Prototype_kuroda\\input\\input.txt")
+    output_data = GetFile(".\\mine\\Prototype_kuroda\\output\\output.txt")
     data = SetInputOutput(input_data,output_data)
     EMBED_SIZE = 100
     HIDDEN_SIZE = 100
@@ -368,11 +368,13 @@ if __name__ == "__main__":
     data_converter = DataConverter(batch_col_size=BATCH_COL_SIZE) # データコンバーター
     data_converter.load(data) # 教師データ読み込み
     vocab_size = len(data_converter.vocab) # 単語数
+    print("単語数:",vocab_size)
+    PrintTime("単語ID変換")
     # pprint.pprint(sorted(data_converter.vocab.items(), key=lambda x:x[1]))
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\base\\sample1.network"
+    network = ".\\mine\\data\\network\\Prototype_kuroda\\sample1.network"
     serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
@@ -380,8 +382,10 @@ if __name__ == "__main__":
     if FLAG_GPU:
         model.to_gpu(0)
     model.reset()
-    # StudyStart(".\\mine\\data\\network\\base\\sample2.network")
+    PrintTime("読み込み")
+    # StudyStart(".\\mine\\data\\network\\Prototype_kuroda\\sample1.network")
     # SpeechStart()
-    # ConsoleInputText()
+    ConsoleInputText()
     # SpeechAnalysis()
-    SpeechAnswer(data)
+    # SpeechAnswer(data)
+    # PrintTime()
