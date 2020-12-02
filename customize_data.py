@@ -45,6 +45,11 @@ def GetFile(path):
         input_data = f.readlines()
     return input_data
 
+def ReadConversationalData(file_name):
+    input_data = GetFile(".\\mine\\{file_name}\\input\\input.txt".format(file_name=file_name))
+    output_data = GetFile(".\\mine\\{file_name}\\output\\output.txt".format(file_name=file_name))
+    data = SetInputOutput(input_data,output_data)
+    return data
 
 def SampleData():
     data = [

@@ -54,7 +54,36 @@ def PercentageOfCorrectAnswers(text_answer,ai_answer):
     temp = bool_count[True]/(bool_count[True]+bool_count[False]) * 100
     print("正答率 : "+str(Decimal(str(temp)).quantize(Decimal('0'), rounding=ROUND_HALF_UP))+"%")
 
-
+def funcname(parameter_list):
+    """
+学習ファイル名
+Personality
+保存ファイル
+Personality.sample1.network
+学習状態
+単語数: 1061
+time :  0:00:00.073748
+time :  0:00:00.095691
+Timing :  単語ID変換  time : 0:00:00.046915
+Timing :  読み込み  time : 0:00:00.074520
+epoch:  10      total loss:     1760.929386138916       time:   0:13:46.749892
+epoch:  20      total loss:     426.48425364494324      time:   0:13:42.134865
+epoch:  30      total loss:     38.94310259819031       time:   0:13:43.389317
+epoch:  40      total loss:     10.703677378594875      time:   0:13:45.170566
+epoch:  50      total loss:     5.275798492133617       time:   0:13:57.714911
+学習データチェック
+教師データ
+Timing :  単語ID変換  time : 0:00:02.478010
+Timing :  読み込み  time : 0:00:02.970723
+正答率 : 97%
+Timing :  END  time : 0:01:30.225784
+欠如データ
+Timing :  単語ID変換  time : 0:00:02.478010
+Timing :  読み込み  time : 0:00:02.970723
+正答率 : 26%
+Timing :  END  time : 0:01:30.225784
+    """
+    pass
 
 if __name__ == "__main__":
     # data = SampleData()
