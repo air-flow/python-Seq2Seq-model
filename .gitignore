@@ -1,3 +1,4 @@
 /vscode
 /.vscode*
 /mine
+*.pyc
