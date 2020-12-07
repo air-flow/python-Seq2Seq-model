@@ -6,7 +6,7 @@ import chainer.links as L
 import MeCab
 import pprint
 from operator import itemgetter
-
+import sys
 from numpy.lib.scimath import sqrt
 from customize_data import SampleData, ReadTestQuestionnaireData,TextRandomLack,ReadConversationalData
 from analysis import CosSimilarity,PercentageOfCorrectAnswers
@@ -358,6 +358,7 @@ if __name__ == "__main__":
     main_time = datetime.datetime.now()
     # data = SampleData()
     file_name = "Personality"
+    # pprint.pprint(sys.path)
     data = ReadConversationalData(file_name)
     EMBED_SIZE = 100
     HIDDEN_SIZE = 100
@@ -387,8 +388,9 @@ if __name__ == "__main__":
     PrintTime("読み込み")
     epoch = []
     # StudyStart(".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name))
-    # SpeechStart()
-    ConsoleInputText()
+    # ConsoleInputText()
     # SpeechAnalysis()
+    data = ReadConversationalData("test_data")
+    SpeechStart()
     # SpeechAnswer(data)
     # PrintTime()

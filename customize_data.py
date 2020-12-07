@@ -3,6 +3,8 @@ import MeCab
 from operator import itemgetter
 import pprint
 import random
+import os 
+import sys
 # from analysis import CosSimilarity
 # 教師データ
 def ReadTestData():
@@ -46,8 +48,11 @@ def GetFile(path):
     return input_data
 
 def ReadConversationalData(file_name):
+    sys.path.append(os.path.dirname(__file__))
     input_data = GetFile(".\\mine\\{file_name}\\input\\input.txt".format(file_name=file_name))
     output_data = GetFile(".\\mine\\{file_name}\\output\\output.txt".format(file_name=file_name))
+    # input_data = GetFile(".\\mine\\Personality\\input\\input.txt")
+    # output_data = GetFile(".\\mine\\Personality\\output\\output.txt")
     data = SetInputOutput(input_data,output_data)
     return data
 
@@ -119,4 +124,5 @@ if __name__ == "__main__":
     # pprint.pprint(temp)
     # for i in SampleData():
         # pprint.pprint(TextRandomLack(i[0][0]))
+    # ReadConversationalData("test")
     pass

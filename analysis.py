@@ -51,6 +51,7 @@ def PercentageOfCorrectAnswers(text_answer,ai_answer):
     a =np.array(text_answer)
     b =np.array(ai_answer)
     bool_count = dict(collections.Counter(a==b))
+    # print(bool_count)
     temp = bool_count[True]/(bool_count[True]+bool_count[False]) * 100
     print("正答率 : "+str(Decimal(str(temp)).quantize(Decimal('0'), rounding=ROUND_HALF_UP))+"%")
 
