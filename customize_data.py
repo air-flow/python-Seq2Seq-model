@@ -47,12 +47,13 @@ def GetFile(path):
         input_data = f.readlines()
     return input_data
 
-def ReadConversationalData(file_name):
+def ReadConversationalData(files):
     sys.path.append(os.path.dirname(__file__))
-    input_data = GetFile(".\\mine\\{file_name}\\input\\input.txt".format(file_name=file_name))
-    output_data = GetFile(".\\mine\\{file_name}\\output\\output.txt".format(file_name=file_name))
-    # input_data = GetFile(".\\mine\\Personality\\input\\input.txt")
-    # output_data = GetFile(".\\mine\\Personality\\output\\output.txt")
+    input_data = []
+    output_data = []
+    for file_name in files:
+        input_data += GetFile(".\\mine\\{file_name}\\input\\input.txt".format(file_name=file_name))
+        output_data += GetFile(".\\mine\\{file_name}\\output\\output.txt".format(file_name=file_name))
     data = SetInputOutput(input_data,output_data)
     return data
 

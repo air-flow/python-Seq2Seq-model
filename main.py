@@ -303,7 +303,7 @@ def StudyStart(output_path):
         serializers.save_npz(output_path, model)
         if (epoch+1)%10 == 0:
             ed = datetime.datetime.now()
-            epoch.append("epoch:\t{}\ttotal loss:\t{}\ttime:\t{}".format(epoch+1, total_loss, ed-st))
+            # epoch.append("epoch:\t{}\ttotal loss:\t{}\ttime:\t{}".format(epoch+1, total_loss, ed-st))
             print("epoch:\t{}\ttotal loss:\t{}\ttime:\t{}".format(epoch+1, total_loss, ed-st))
             st = datetime.datetime.now()
 
@@ -357,9 +357,10 @@ def PrintTime(text="END"):
 if __name__ == "__main__":
     main_time = datetime.datetime.now()
     # data = SampleData()
-    file_name = "Personality"
+    file = ["Prototype_kuroda2.0","base_sample","Personality","Prototype_kuroda","Prototype_kuroda2.0","quiz","test_data"]
+    file_name = file[0]
     # pprint.pprint(sys.path)
-    data = ReadConversationalData(file_name)
+    data = ReadConversationalData(file)
     EMBED_SIZE = 100
     HIDDEN_SIZE = 100
     BATCH_SIZE = 6 # ミニバッチ学習のバッチサイズ数
@@ -377,8 +378,8 @@ if __name__ == "__main__":
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
-    serializers.load_npz(network, model)
+    # network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
+    # serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
     opt.add_hook(optimizer.GradientClipping(5))
@@ -386,11 +387,11 @@ if __name__ == "__main__":
         model.to_gpu(0)
     model.reset()
     PrintTime("読み込み")
-    epoch = []
+    # epoch = []
     # StudyStart(".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name))
     # ConsoleInputText()
     # SpeechAnalysis()
-    data = ReadConversationalData("test_data")
-    SpeechStart()
+    # data = ReadConversationalData("test_data")
+    # SpeechStart()
     # SpeechAnswer(data)
     # PrintTime()
