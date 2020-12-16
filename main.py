@@ -394,5 +394,5 @@ if __name__ == "__main__":
     # data = ReadConversationalData("test_data")
     # SpeechStart()
     # SpeechAnswer(data)
-    SpeechOneText()
+    print(SpeechOneText())
     PrintTime()
