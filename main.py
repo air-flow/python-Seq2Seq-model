@@ -314,7 +314,7 @@ def SpeechStart():
         result = predict(model, text)
         print(text, result)
 
-def SpeechOneText(text):
+def SpeechOneText(text='本日は晴天なり'):
     return predict(model, text)
 
 def ConsoleInputText():
@@ -357,8 +357,8 @@ def PrintTime(text="END"):
 if __name__ == "__main__":
     main_time = datetime.datetime.now()
     # data = SampleData()
-    file = ["Prototype_kuroda2.0","base_sample","Personality","Prototype_kuroda","Prototype_kuroda2.0","quiz","test_data"]
-    file_name = file[0]
+    file = ["Prototype_kuroda3.0"]
+    file_name = "Prototype_kuroda3.0"
     # pprint.pprint(sys.path)
     data = ReadConversationalData(file)
     EMBED_SIZE = 100
@@ -378,8 +378,8 @@ if __name__ == "__main__":
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    # network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
-    # serializers.load_npz(network, model)
+    network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
+    serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
     opt.add_hook(optimizer.GradientClipping(5))
@@ -394,4 +394,5 @@ if __name__ == "__main__":
     # data = ReadConversationalData("test_data")
     # SpeechStart()
     # SpeechAnswer(data)
-    # PrintTime()
+    SpeechOneText()
+    PrintTime()
