@@ -7,6 +7,7 @@ import MeCab
 import pprint
 from operator import itemgetter
 import sys
+import os
 from numpy.lib.scimath import sqrt
 from customize_data import SampleData, ReadTestQuestionnaireData,TextRandomLack,ReadConversationalData
 from analysis import CosSimilarity,PercentageOfCorrectAnswers
@@ -354,11 +355,16 @@ def PrintTime(text="END"):
     now_time = datetime.datetime.now()
     print("Timing : ",text," time :",now_time-main_time)
 
+def cd():
+    path = os.getcwd()
+    os.chdir(path)
+
 if __name__ == "__main__":
+    cd()
     main_time = datetime.datetime.now()
     # data = SampleData()
-    file = ["Prototype_kuroda3.0"]
-    file_name = "Prototype_kuroda3.0"
+    file = ["51"]
+    file_name = "51"
     # pprint.pprint(sys.path)
     data = ReadConversationalData(file)
     EMBED_SIZE = 100
@@ -378,8 +384,8 @@ if __name__ == "__main__":
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
-    serializers.load_npz(network, model)
+    # network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
+    # serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
     opt.add_hook(optimizer.GradientClipping(5))
@@ -388,7 +394,7 @@ if __name__ == "__main__":
     model.reset()
     PrintTime("読み込み")
     # epoch = []
-    # StudyStart(".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name))
+    StudyStart(".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name))
     # ConsoleInputText()
     # SpeechAnalysis()
     # data = ReadConversationalData("test_data")
