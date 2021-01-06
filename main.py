@@ -358,8 +358,7 @@ def PrintTime(text="END"):
     print("Timing : ",text," time :",now_time-main_time)
 
 def cd():
-    path = os.getcwd()
-    os.chdir(path)
+    os.chdir(os.path.dirname(__file__))
 
 if __name__ == "__main__":
     cd()
@@ -397,9 +396,9 @@ if __name__ == "__main__":
     PrintTime("読み込み")
     # epoch = []
     # StudyStart(".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name))
-    # ConsoleInputText() #コンソールからの入力
+    ConsoleInputText() #コンソールからの入力
     # SpeechAnalysis() #コサイン類似度判定
     # SpeechStart() # 学習データ入力からの推測
-    SpeechAnswer(data) # 学習データ計測、欠如データ計測
+    # SpeechAnswer(data) # 学習データ計測、欠如データ計測
     # print(SpeechOneText())
     PrintTime("---END---")
