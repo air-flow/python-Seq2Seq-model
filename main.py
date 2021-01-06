@@ -364,7 +364,7 @@ if __name__ == "__main__":
     cd()
     main_time = datetime.datetime.now()
     # data = SampleData()
-    file = ["157"]
+    file = ["6840"]
     file_name = file[0]
     # pprint.pprint(sys.path)
     data = ReadConversationalData(file)
@@ -385,8 +385,8 @@ if __name__ == "__main__":
     # モデルの宣言
     model = AttSeq2Seq(vocab_size=vocab_size, embed_size=EMBED_SIZE, hidden_size=HIDDEN_SIZE, batch_col_size=BATCH_COL_SIZE)
     # ネットワークファイルの読み込み
-    network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
-    serializers.load_npz(network, model)
+    # network = ".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name)
+    # serializers.load_npz(network, model)
     opt = optimizers.Adam()
     opt.setup(model)
     opt.add_hook(optimizer.GradientClipping(5))
@@ -395,8 +395,8 @@ if __name__ == "__main__":
     model.reset()
     PrintTime("読み込み")
     # epoch = []
-    # StudyStart(".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name))
-    ConsoleInputText() #コンソールからの入力
+    StudyStart(".\\mine\\data\\network\\{file_name}\\sample1.network".format(file_name=file_name))
+    # ConsoleInputText() #コンソールからの入力
     # SpeechAnalysis() #コサイン類似度判定
     # SpeechStart() # 学習データ入力からの推測
     # SpeechAnswer(data) # 学習データ計測、欠如データ計測
